@@ -9,6 +9,7 @@
     "name",
     "event",
     "priority",
+    "group_type",
     "expression",
     "actions"
   ],
@@ -26,6 +27,16 @@
     },
     "priority": {
       "type": "integer"
+    },
+    "group_type": {
+      "type": "string",
+      "enum": [
+        "response-anomalies",
+        "performance-monitoring",
+        "mcp-visibility",
+        "slo-guardrails"
+      ],
+      "description": "High-level grouping used to cluster templates in the catalog."
     },
     "expression": {
       "$ref": "#/$defs/expression"

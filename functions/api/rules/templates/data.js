@@ -1,3 +1,26 @@
+export const template_group_types = [
+    {
+        "id": "response-anomalies",
+        "label": "Response Anomalies",
+        "description": "Templates that monitor error-prone HTTP response patterns."
+    },
+    {
+        "id": "performance-monitoring",
+        "label": "Performance Monitoring",
+        "description": "Templates that highlight latency or throughput concerns."
+    },
+    {
+        "id": "mcp-visibility",
+        "label": "MCP Visibility",
+        "description": "Templates that surface Model Context Protocol traffic patterns."
+    },
+    {
+        "id": "slo-guardrails",
+        "label": "SLO Guardrails",
+        "description": "Templates that watch SLO-protected traffic for breaches."
+    }
+];
+
 const templates = [
     {
         "id": "tmpl-response-5xx",
@@ -5,6 +28,7 @@ const templates = [
         "description": "Adds error tags when the upstream responds with a 5xx status code.",
         "event": "operation.completed",
         "priority": 100,
+        "group_type": "response-anomalies",
         "expression": {
             "op": "range",
             "left": {
@@ -22,8 +46,7 @@ const templates = [
                     "tags": [
                         "error",
                         "server-error"
-                    ],
-                    "color": "#B81B1B"
+                    ]
                 }
             }
         ]
@@ -34,6 +57,7 @@ const templates = [
         "description": "Labels operations whose total duration is one second or longer.",
         "event": "operation.completed",
         "priority": 90,
+        "group_type": "performance-monitoring",
         "expression": {
             "op": ">=",
             "left": {
@@ -47,8 +71,7 @@ const templates = [
                 "params": {
                     "tags": [
                         "slow"
-                    ],
-                    "color": "#DAA520"
+                    ]
                 }
             }
         ]
@@ -59,6 +82,7 @@ const templates = [
         "description": "Detects authentication endpoints returning a 4xx response and tags them for follow-up.",
         "event": "operation.completed",
         "priority": 80,
+        "group_type": "response-anomalies",
         "expression": {
             "op": "and",
             "args": [
@@ -99,6 +123,7 @@ const templates = [
         "description": "Adds a generic MCP tag to requests routed through the MCP gateway.",
         "event": "operation.completed",
         "priority": 70,
+        "group_type": "mcp-visibility",
         "expression": {
             "op": "==",
             "left": {
@@ -123,6 +148,7 @@ const templates = [
         "description": "Labels MCP tool invocations and tags them with the requested tool name.",
         "event": "operation.completed",
         "priority": 60,
+        "group_type": "mcp-visibility",
         "expression": {
             "op": "and",
             "args": [
@@ -168,6 +194,7 @@ const templates = [
         "description": "Highlights MCP resource interactions and tags them with the requested resource identifier.",
         "event": "operation.completed",
         "priority": 55,
+        "group_type": "mcp-visibility",
         "expression": {
             "op": "and",
             "args": [
@@ -213,6 +240,7 @@ const templates = [
         "description": "Tags MCP prompt calls and enriches them with the prompt name used.",
         "event": "operation.completed",
         "priority": 50,
+        "group_type": "mcp-visibility",
         "expression": {
             "op": "and",
             "args": [
@@ -258,6 +286,7 @@ const templates = [
         "description": "Flags SLO-protected API calls whose latency is trending high (500-999 ms).",
         "event": "operation.completed",
         "priority": 40,
+        "group_type": "slo-guardrails",
         "expression": {
             "op": "and",
             "args": [
@@ -288,8 +317,7 @@ const templates = [
                         "slo",
                         "slo.latency",
                         "slo.warning"
-                    ],
-                    "color": "#E67E22"
+                    ]
                 }
             }
         ]
@@ -300,6 +328,7 @@ const templates = [
         "description": "Captures SLO-protected API calls breaching the 1s latency objective.",
         "event": "operation.completed",
         "priority": 35,
+        "group_type": "slo-guardrails",
         "expression": {
             "op": "and",
             "args": [
@@ -327,8 +356,7 @@ const templates = [
                         "slo",
                         "slo.latency",
                         "slo.breach"
-                    ],
-                    "color": "#B81B1B"
+                    ]
                 }
             }
         ]
@@ -339,6 +367,7 @@ const templates = [
         "description": "Highlights 5xx responses on SLO-protected APIs as error budget burns.",
         "event": "operation.completed",
         "priority": 30,
+        "group_type": "slo-guardrails",
         "expression": {
             "op": "and",
             "args": [

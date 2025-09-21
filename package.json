@@ -1,0 +1,13 @@
+{
+  "name": "inspectr-rule-templates-pages",
+  "version": "1.0.0",
+  "description": "Inspectr Rule Templates",
+  "license": "ISC",
+  "author": "Tim Haselaars",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx wrangler pages dev ./ --compatibility-date=2025-09-21",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

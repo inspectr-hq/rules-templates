@@ -26,7 +26,7 @@ const templates = [
         "id": "tmpl-response-5xx",
         "name": "Tag 5xx responses",
         "description": "Adds error tags when the upstream responds with a 5xx status code.",
-        "event": "operation.completed",
+        "event": "inspectr.operation.completed",
         "priority": 100,
         "group_type": "response-anomalies",
         "expression": {
@@ -55,7 +55,7 @@ const templates = [
         "id": "tmpl-response-slow",
         "name": "Highlight slow responses",
         "description": "Labels operations whose total duration is one second or longer.",
-        "event": "operation.completed",
+        "event": "inspectr.operation.completed",
         "priority": 90,
         "group_type": "performance-monitoring",
         "expression": {
@@ -80,7 +80,7 @@ const templates = [
         "id": "tmpl-auth-4xx",
         "name": "Surface auth failures",
         "description": "Detects authentication endpoints returning a 4xx response and tags them for follow-up.",
-        "event": "operation.completed",
+        "event": "inspectr.operation.completed",
         "priority": 80,
         "group_type": "response-anomalies",
         "expression": {
@@ -121,7 +121,7 @@ const templates = [
         "id": "tmpl-mcp-generic",
         "name": "Tag MCP traffic",
         "description": "Adds a generic MCP tag to requests routed through the MCP gateway.",
-        "event": "operation.completed",
+        "event": "inspectr.operation.completed",
         "priority": 70,
         "group_type": "mcp-visibility",
         "expression": {
@@ -146,7 +146,7 @@ const templates = [
         "id": "tmpl-mcp-tools",
         "name": "Tag MCP tool calls",
         "description": "Labels MCP tool invocations and tags them with the requested tool name.",
-        "event": "operation.completed",
+        "event": "inspectr.operation.completed",
         "priority": 60,
         "group_type": "mcp-visibility",
         "expression": {
@@ -192,7 +192,7 @@ const templates = [
         "id": "tmpl-mcp-resources",
         "name": "Tag MCP resource access",
         "description": "Highlights MCP resource interactions and tags them with the requested resource identifier.",
-        "event": "operation.completed",
+        "event": "inspectr.operation.completed",
         "priority": 55,
         "group_type": "mcp-visibility",
         "expression": {
@@ -238,7 +238,7 @@ const templates = [
         "id": "tmpl-mcp-prompts",
         "name": "Tag MCP prompt usage",
         "description": "Tags MCP prompt calls and enriches them with the prompt name used.",
-        "event": "operation.completed",
+        "event": "inspectr.operation.completed",
         "priority": 50,
         "group_type": "mcp-visibility",
         "expression": {
@@ -284,7 +284,7 @@ const templates = [
         "id": "tmpl-slo-latency-warning",
         "name": "SLO latency warning",
         "description": "Flags SLO-protected API calls whose latency is trending high (500-999 ms).",
-        "event": "operation.completed",
+        "event": "inspectr.operation.completed",
         "priority": 40,
         "group_type": "slo-guardrails",
         "expression": {
@@ -326,7 +326,7 @@ const templates = [
         "id": "tmpl-slo-latency-breach",
         "name": "SLO latency breach",
         "description": "Captures SLO-protected API calls breaching the 1s latency objective.",
-        "event": "operation.completed",
+        "event": "inspectr.operation.completed",
         "priority": 35,
         "group_type": "slo-guardrails",
         "expression": {
@@ -365,7 +365,7 @@ const templates = [
         "id": "tmpl-slo-error-budget",
         "name": "SLO error budget hit",
         "description": "Highlights 5xx responses on SLO-protected APIs as error budget burns.",
-        "event": "operation.completed",
+        "event": "inspectr.operation.completed",
         "priority": 30,
         "group_type": "slo-guardrails",
         "expression": {

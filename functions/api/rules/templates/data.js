@@ -41,7 +41,7 @@ const templates = [
         },
         "actions": [
             {
-                "type": "inspectr.tag_static",
+                "type": "inspectr.tag.static",
                 "params": {
                     "tags": [
                         "error",
@@ -67,7 +67,7 @@ const templates = [
         },
         "actions": [
             {
-                "type": "inspectr.tag_static",
+                "type": "inspectr.tag.static",
                 "params": {
                     "tags": [
                         "slow"
@@ -107,7 +107,7 @@ const templates = [
         },
         "actions": [
             {
-                "type": "inspectr.tag_static",
+                "type": "inspectr.tag.static",
                 "params": {
                     "tags": [
                         "auth",
@@ -133,7 +133,7 @@ const templates = [
         },
         "actions": [
             {
-                "type": "inspectr.tag_static",
+                "type": "inspectr.tag.static",
                 "params": {
                     "tags": [
                         "mcp"
@@ -170,7 +170,7 @@ const templates = [
         },
         "actions": [
             {
-                "type": "inspectr.tag_static",
+                "type": "inspectr.tag.static",
                 "params": {
                     "tags": [
                         "mcp",
@@ -179,7 +179,7 @@ const templates = [
                 }
             },
             {
-                "type": "inspectr.tag_dynamic",
+                "type": "inspectr.tag.dynamic",
                 "params": {
                     "source_path": "$.request.body",
                     "json_path": "params.name",
@@ -216,7 +216,7 @@ const templates = [
         },
         "actions": [
             {
-                "type": "inspectr.tag_static",
+                "type": "inspectr.tag.static",
                 "params": {
                     "tags": [
                         "mcp",
@@ -225,7 +225,7 @@ const templates = [
                 }
             },
             {
-                "type": "inspectr.tag_dynamic",
+                "type": "inspectr.tag.dynamic",
                 "params": {
                     "source_path": "$.request.body",
                     "json_path": "params.uri",
@@ -262,7 +262,7 @@ const templates = [
         },
         "actions": [
             {
-                "type": "inspectr.tag_static",
+                "type": "inspectr.tag.static",
                 "params": {
                     "tags": [
                         "mcp",
@@ -271,7 +271,7 @@ const templates = [
                 }
             },
             {
-                "type": "inspectr.tag_dynamic",
+                "type": "inspectr.tag.dynamic",
                 "params": {
                     "source_path": "$.request.body",
                     "json_path": "params.name",
@@ -311,7 +311,7 @@ const templates = [
         },
         "actions": [
             {
-                "type": "inspectr.tag_static",
+                "type": "inspectr.tag.static",
                 "params": {
                     "tags": [
                         "slo",
@@ -350,7 +350,7 @@ const templates = [
         },
         "actions": [
             {
-                "type": "inspectr.tag_static",
+                "type": "inspectr.tag.static",
                 "params": {
                     "tags": [
                         "slo",
@@ -392,7 +392,7 @@ const templates = [
         },
         "actions": [
             {
-                "type": "inspectr.tag_static",
+                "type": "inspectr.tag.static",
                 "params": {
                     "tags": [
                         "slo",

@@ -8,6 +8,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx wrangler pages dev ./ --compatibility-date=2025-09-21",
+    "format": "npx prettier --write functions//**/*.{js,jsx,css} --config ./.prettierrc",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

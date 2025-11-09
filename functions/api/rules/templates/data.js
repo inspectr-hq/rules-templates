@@ -643,6 +643,14 @@ const templates = [
       {
         type: 'inspectr.tag.dynamic',
         params: {
+          source_path: '$.response.headers.ratelimit-policy',
+          key: 'ratelimit.policy',
+          fallback: ''
+        }
+      },
+      {
+        type: 'inspectr.tag.dynamic',
+        params: {
           source_path: '$.response.headers.ratelimit-reset',
           key: 'ratelimit.reset',
           fallback: ''

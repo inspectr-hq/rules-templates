@@ -591,7 +591,7 @@ const templates = [
     id: 'tmpl-idempotency-key',
     name: 'Idempotency-Key capture',
     description: 'Tags requests using Idempotency-Key for duplicate/retry analysis.',
-    event: 'inspectr.operation.started',
+    event: 'inspectr.operation.completed',
     priority: 106,
     group_type: 'release-feature',
     expression: {
@@ -732,7 +732,7 @@ const templates = [
     id: 'tmpl-api-version-detect',
     name: 'API version detection',
     description: 'Tags the API version from the URL path (/api/vN/...) or X-API-Version header.',
-    event: 'inspectr.operation.started',
+    event: 'inspectr.operation.completed',
     priority: 101,
     group_type: 'release-feature',
     expression: {
@@ -757,7 +757,7 @@ const templates = [
     id: 'tmpl-tenant-detect',
     name: 'Tenant / customer tagging',
     description: 'Tags tenant/customer from X-Customer-Id header or request body tenantId.',
-    event: 'inspectr.operation.started',
+    event: 'inspectr.operation.completed',
     priority: 100,
     group_type: 'release-feature',
     expression: {
@@ -787,7 +787,7 @@ const templates = [
     id: 'tmpl-feature-flag-detect',
     name: 'Feature flag / experiment tagging',
     description: 'Tags feature flag or experiment id from headers (X-Feature-Flag / X-Experiment).',
-    event: 'inspectr.operation.started',
+    event: 'inspectr.operation.completed',
     priority: 99,
     group_type: 'release-feature',
     expression: {
@@ -904,7 +904,7 @@ const templates = [
     id: 'tmpl-trace-page-token-request',
     name: 'Trace pagination token (request)',
     description: 'Assigns trace using page token in the request query to align pagination fetches.',
-    event: 'inspectr.operation.started',
+    event: 'inspectr.operation.completed',
     priority: 86,
     group_type: 'payload-tagging',
     expression: {
@@ -1026,7 +1026,7 @@ const templates = [
     id: 'tmpl-trace-session-header',
     name: 'Trace session (header)',
     description: 'Assigns trace using client-supplied X-Session-Id header to correlate user sessions.',
-    event: 'inspectr.operation.started',
+    event: 'inspectr.operation.completed',
     priority: 82,
     group_type: 'payload-tagging',
     expression: {
@@ -1050,7 +1050,7 @@ const templates = [
   //   id: 'tmpl-trace-session-cookie',
   //   name: 'Trace from session cookie (best-effort)',
   //   description: 'Assigns trace from Cookie header when it contains a session key; truncated to avoid leaking full cookie.',
-  //   event: 'inspectr.operation.started',
+  //   event: 'inspectr.operation.completed',
   //   priority: 81,
   //   group_type: 'payload-tagging',
   //   expression: {
@@ -1074,7 +1074,7 @@ const templates = [
     id: 'tmpl-deployment-branch-build',
     name: 'Deployment branch & build tags',
     description: 'Adds git branch and build number tags for easy correlation with releases.',
-    event: 'inspectr.operation.started',
+    event: 'inspectr.operation.completed',
     priority: 95,
     group_type: 'release-feature',
     expression: { op: '==', left: { path: '$.meta.always' }, right: true },
@@ -1113,7 +1113,7 @@ const templates = [
     id: 'tmpl-oauth-grant-type',
     name: 'OAuth grant type tagging',
     description: 'Tags the OAuth grant type when calling token endpoints.',
-    event: 'inspectr.operation.started',
+    event: 'inspectr.operation.completed',
     priority: 92,
     group_type: 'security-auth',
     expression: {
@@ -1184,7 +1184,7 @@ const templates = [
     name: 'OAuth client identity',
     description:
       'Tags the requesting OAuth client_id (from body or headers) for accountability and analysis.',
-    event: 'inspectr.operation.started',
+    event: 'inspectr.operation.completed',
     priority: 90,
     group_type: 'security-auth',
     expression: {
@@ -1274,7 +1274,7 @@ const templates = [
     name: 'OAuth flow trace linkage',
     description:
       'Ensures trace assignment is captured for /authorize and /token steps to link the full OAuth flow.',
-    event: 'inspectr.operation.started',
+    event: 'inspectr.operation.completed',
     priority: 88,
     group_type: 'security-auth',
     expression: {

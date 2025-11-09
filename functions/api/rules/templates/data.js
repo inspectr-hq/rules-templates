@@ -1,9 +1,9 @@
 export const template_group_types = [
-  {
-    id: 'response-anomalies',
-    label: 'Response Anomalies',
-    description: 'Templates that monitor error-prone HTTP response patterns.'
-  },
+  // {
+  //   id: 'response-anomalies',
+  //   label: 'Response Anomalies',
+  //   description: 'Templates that monitor error-prone HTTP response patterns.'
+  // },
   {
     id: 'performance-monitoring',
     label: 'Performance Monitoring',
@@ -59,65 +59,65 @@ export const template_group_types = [
 ];
 
 const templates = [
-  {
-    id: 'tmpl-response-5xx',
-    name: 'Tag 5xx responses',
-    description: 'Adds error tags when the upstream responds with a 5xx status code.',
-    event: 'inspectr.operation.completed',
-    priority: 100,
-    group_type: 'response-anomalies',
-    expression: {
-      op: 'range',
-      left: {
-        path: '$.response.status'
-      },
-      right: [500, 599]
-    },
-    actions: [
-      {
-        type: 'inspectr.tag.static',
-        params: {
-          tags: ['error', 'server-error']
-        }
-      }
-    ]
-  },
-  {
-    id: 'tmpl-auth-4xx',
-    name: 'Surface auth failures',
-    description:
-      'Detects authentication endpoints returning a 4xx response and tags them for follow-up.',
-    event: 'inspectr.operation.completed',
-    priority: 80,
-    group_type: 'response-anomalies',
-    expression: {
-      op: 'and',
-      args: [
-        {
-          op: 'range',
-          left: {
-            path: '$.response.status'
-          },
-          right: [400, 499]
-        },
-        {
-          op: 'matches',
-          left: {
-            path: '$.request.path'
-          },
-          right: '(?i)(login|signin|auth)'
-        }
-      ]
-    },
-    actions: [
-      {
-        type: 'inspectr.tag.static',
-        params: {
-          tags: ['auth', 'client-error']
-        }
-      }
-    ]
-  },
+  // {
+  //   id: 'tmpl-response-5xx',
+  //   name: 'Tag 5xx responses',
+  //   description: 'Adds error tags when the upstream responds with a 5xx status code.',
+  //   event: 'inspectr.operation.completed',
+  //   priority: 100,
+  //   group_type: 'response-anomalies',
+  //   expression: {
+  //     op: 'range',
+  //     left: {
+  //       path: '$.response.status'
+  //     },
+  //     right: [500, 599]
+  //   },
+  //   actions: [
+  //     {
+  //       type: 'inspectr.tag.static',
+  //       params: {
+  //         tags: ['error', 'server-error']
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   id: 'tmpl-auth-4xx',
+  //   name: 'Surface auth failures',
+  //   description:
+  //     'Detects authentication endpoints returning a 4xx response and tags them for follow-up.',
+  //   event: 'inspectr.operation.completed',
+  //   priority: 80,
+  //   group_type: 'response-anomalies',
+  //   expression: {
+  //     op: 'and',
+  //     args: [
+  //       {
+  //         op: 'range',
+  //         left: {
+  //           path: '$.response.status'
+  //         },
+  //         right: [400, 499]
+  //       },
+  //       {
+  //         op: 'matches',
+  //         left: {
+  //           path: '$.request.path'
+  //         },
+  //         right: '(?i)(login|signin|auth)'
+  //       }
+  //     ]
+  //   },
+  //   actions: [
+  //     {
+  //       type: 'inspectr.tag.static',
+  //       params: {
+  //         tags: ['auth', 'client-error']
+  //       }
+  //     }
+  //   ]
+  // },
   {
     id: 'tmpl-mcp-generic',
     name: 'Tag MCP traffic',
@@ -863,6 +863,213 @@ const templates = [
       }
     ]
   },
+  {
+    id: 'tmpl-trace-page-next-token',
+    name: 'Trace pagination token (response)',
+    description: 'Assigns trace using next page token in the response body to stitch paginated flows.',
+    event: 'inspectr.operation.completed',
+    priority: 87,
+    group_type: 'payload-tagging',
+    expression: {
+      op: 'or',
+      args: [
+        { op: 'matches', left: { path: '$.response.body.next_token' }, right: '.+' },
+        { op: 'matches', left: { path: '$.response.body.nextPageToken' }, right: '.+' }
+      ]
+    },
+    actions: [
+      {
+        type: 'inspectr.trace.assign',
+        params: {
+          source_path: '$.response.body',
+          json_path: 'next_token',
+          prefix: 'page:',
+          override_existing: false,
+          max_length: 128
+        }
+      },
+      {
+        type: 'inspectr.trace.assign',
+        params: {
+          source_path: '$.response.body',
+          json_path: 'nextPageToken',
+          prefix: 'page:',
+          override_existing: false,
+          max_length: 128
+        }
+      }
+    ]
+  },
+  {
+    id: 'tmpl-trace-page-token-request',
+    name: 'Trace pagination token (request)',
+    description: 'Assigns trace using page token in the request query to align pagination fetches.',
+    event: 'inspectr.operation.started',
+    priority: 86,
+    group_type: 'payload-tagging',
+    expression: {
+      op: 'or',
+      args: [
+        { op: 'matches', left: { path: '$.request.query.page_token' }, right: '.+' },
+        { op: 'matches', left: { path: '$.request.query.pageToken' }, right: '.+' }
+      ]
+    },
+    actions: [
+      {
+        type: 'inspectr.trace.assign',
+        params: {
+          source_path: '$.request.query.page_token',
+          prefix: 'page:',
+          override_existing: false,
+          max_length: 128
+        }
+      },
+      {
+        type: 'inspectr.trace.assign',
+        params: {
+          source_path: '$.request.query.pageToken',
+          prefix: 'page:',
+          override_existing: false,
+          max_length: 128
+        }
+      }
+    ]
+  },
+  {
+    id: 'tmpl-trace-location-header',
+    name: 'Trace Location header (201 Created)',
+    description: 'Assigns trace using the Location header for created resources to correlate follow-up operations.',
+    event: 'inspectr.operation.completed',
+    priority: 85,
+    group_type: 'payload-tagging',
+    expression: {
+      op: 'and',
+      args: [
+        { op: '==', left: { path: '$.response.status' }, right: 201 },
+        { op: 'matches', left: { path: '$.response.headers.location' }, right: '.+' }
+      ]
+    },
+    actions: [
+      {
+        type: 'inspectr.trace.assign',
+        params: {
+          source_path: '$.response.headers.location',
+          prefix: 'loc:',
+          override_existing: false,
+          max_length: 256
+        }
+      }
+    ]
+  },
+  {
+    id: 'tmpl-trace-job-id-body',
+    name: 'Trace Bulk / batch job id (body)',
+    description: 'Assigns trace using job identifiers returned in the response body to stitch async flows.',
+    event: 'inspectr.operation.completed',
+    priority: 84,
+    group_type: 'payload-tagging',
+    expression: {
+      op: 'or',
+      args: [
+        { op: 'matches', left: { path: '$.response.body.job_id' }, right: '.+' },
+        { op: 'matches', left: { path: '$.response.body.jobId' }, right: '.+' }
+      ]
+    },
+    actions: [
+      {
+        type: 'inspectr.trace.assign',
+        params: {
+          source_path: '$.response.body',
+          json_path: 'job_id',
+          prefix: 'job:',
+          override_existing: false,
+          max_length: 128
+        }
+      },
+      {
+        type: 'inspectr.trace.assign',
+        params: {
+          source_path: '$.response.body',
+          json_path: 'jobId',
+          prefix: 'job:',
+          override_existing: false,
+          max_length: 128
+        }
+      }
+    ]
+  },
+  {
+    id: 'tmpl-trace-job-id-header',
+    name: 'Trace Bulk / batch job id (header)',
+    description: 'Assigns trace using job identifiers returned in headers to stitch async flows.',
+    event: 'inspectr.operation.completed',
+    priority: 83,
+    group_type: 'payload-tagging',
+    expression: {
+      op: 'matches',
+      left: { path: '$.response.headers.x-job-id' },
+      right: '.+'
+    },
+    actions: [
+      {
+        type: 'inspectr.trace.assign',
+        params: {
+          source_path: '$.response.headers.x-job-id',
+          prefix: 'job:',
+          override_existing: false,
+          max_length: 128
+        }
+      }
+    ]
+  },
+  {
+    id: 'tmpl-trace-session-header',
+    name: 'Trace session (header)',
+    description: 'Assigns trace using client-supplied X-Session-Id header to correlate user sessions.',
+    event: 'inspectr.operation.started',
+    priority: 82,
+    group_type: 'payload-tagging',
+    expression: {
+      op: 'matches',
+      left: { path: '$.request.headers.x-session-id' },
+      right: '.+'
+    },
+    actions: [
+      {
+        type: 'inspectr.trace.assign',
+        params: {
+          source_path: '$.request.headers.x-session-id',
+          prefix: 'sess:',
+          override_existing: false,
+          max_length: 128
+        }
+      }
+    ]
+  },
+  // {
+  //   id: 'tmpl-trace-session-cookie',
+  //   name: 'Trace from session cookie (best-effort)',
+  //   description: 'Assigns trace from Cookie header when it contains a session key; truncated to avoid leaking full cookie.',
+  //   event: 'inspectr.operation.started',
+  //   priority: 81,
+  //   group_type: 'payload-tagging',
+  //   expression: {
+  //     op: 'contains',
+  //     left: { path: '$.request.headers.cookie' },
+  //     right: 'session='
+  //   },
+  //   actions: [
+  //     {
+  //       type: 'inspectr.trace.assign',
+  //       params: {
+  //         source_path: '$.request.headers.cookie',
+  //         prefix: 'sess:',
+  //         override_existing: false,
+  //         max_length: 80
+  //       }
+  //     }
+  //   ]
+  // },
   {
     id: 'tmpl-deployment-branch-build',
     name: 'Deployment branch & build tags',

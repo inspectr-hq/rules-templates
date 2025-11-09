@@ -16,7 +16,7 @@ export const template_group_types = [
   },
   {
     id: 'slo-guardrails',
-    label: 'SLO Guardrails',
+    label: 'SLO & Performance Guardrails',
     description: 'Templates that watch SLO-protected traffic for breaches.'
   },
   {
@@ -26,9 +26,9 @@ export const template_group_types = [
       'Templates that normalize event metadata, signatures, retries, and provider specifics.'
   },
   {
-    id: 'tenancy-feature',
+    id: 'release-feature',
     label: 'Tenant & Feature Flags',
-    description: 'Templates that add business context like tenant, version, and feature toggles.'
+    description: 'Templates that add business context like branch, build, tenant, version, and feature toggles.'
   },
   {
     id: 'rate-limiting',
@@ -38,19 +38,19 @@ export const template_group_types = [
   {
     id: 'security-auth',
     label: 'Security & Auth',
-    description: 'Templates that surface authn/authz context and failures.'
+    description: 'Templates that surface authentication/authorization context and failures.'
   },
-  {
-    id: 'security-oauth',
-    label: 'OAuth',
-    description:
-      'Templates that surface OAuth/OIDC grant flows, client identity, errors, and token characteristics.'
-  },
-  {
-    id: 'release-infra',
-    label: 'Release & Infra Context',
-    description: 'Templates that attach branch/build/region/owner for faster incident triage.'
-  },
+  // {
+  //   id: 'security-oauth',
+  //   label: 'OAuth',
+  //   description:
+  //     'Templates that surface OAuth/OIDC grant flows, client identity, errors, and token characteristics.'
+  // },
+  // {
+  //   id: 'release-infra',
+  //   label: 'Release & Infra Context',
+  //   description: 'Templates that attach branch/build/region/owner for faster incident triage.'
+  // },
   {
     id: 'payload-tagging',
     label: 'Payload',
@@ -78,29 +78,6 @@ const templates = [
         type: 'inspectr.tag.static',
         params: {
           tags: ['error', 'server-error']
-        }
-      }
-    ]
-  },
-  {
-    id: 'tmpl-response-slow',
-    name: 'Highlight slow responses',
-    description: 'Labels operations whose total duration is one second or longer.',
-    event: 'inspectr.operation.completed',
-    priority: 90,
-    group_type: 'performance-monitoring',
-    expression: {
-      op: '>=',
-      left: {
-        path: '$.timing.duration'
-      },
-      right: 1000
-    },
-    actions: [
-      {
-        type: 'inspectr.tag.static',
-        params: {
-          tags: ['slow']
         }
       }
     ]
@@ -365,6 +342,29 @@ const templates = [
     ]
   },
   {
+    id: 'tmpl-slo-response-slow',
+    name: 'Slow responses (+1 second)',
+    description: 'Highlights operations whose total duration is one second or longer.',
+    event: 'inspectr.operation.completed',
+    priority: 90,
+    group_type: 'slo-guardrails',
+    expression: {
+      op: '>=',
+      left: {
+        path: '$.timing.duration'
+      },
+      right: 1000
+    },
+    actions: [
+      {
+        type: 'inspectr.tag.static',
+        params: {
+          tags: ['slow']
+        }
+      }
+    ]
+  },
+  {
     id: 'tmpl-slo-error-budget',
     name: 'SLO error budget hit',
     description: 'Highlights 5xx responses on SLO-protected APIs as error budget burns.',
@@ -593,7 +593,7 @@ const templates = [
     description: 'Tags requests using Idempotency-Key for duplicate/retry analysis.',
     event: 'inspectr.operation.started',
     priority: 106,
-    group_type: 'tenancy-feature',
+    group_type: 'release-feature',
     expression: {
       op: 'matches',
       left: { path: '$.request.headers.idempotency-key' },
@@ -734,7 +734,7 @@ const templates = [
     description: 'Tags the API version from the URL path (/api/vN/...) or X-API-Version header.',
     event: 'inspectr.operation.started',
     priority: 101,
-    group_type: 'tenancy-feature',
+    group_type: 'release-feature',
     expression: {
       op: 'or',
       args: [
@@ -759,7 +759,7 @@ const templates = [
     description: 'Tags tenant/customer from X-Customer-Id header or request body tenantId.',
     event: 'inspectr.operation.started',
     priority: 100,
-    group_type: 'tenancy-feature',
+    group_type: 'release-feature',
     expression: {
       op: 'or',
       args: [
@@ -789,7 +789,7 @@ const templates = [
     description: 'Tags feature flag or experiment id from headers (X-Feature-Flag / X-Experiment).',
     event: 'inspectr.operation.started',
     priority: 99,
-    group_type: 'tenancy-feature',
+    group_type: 'release-feature',
     expression: {
       op: 'or',
       args: [
@@ -869,7 +869,7 @@ const templates = [
     description: 'Adds git branch and build number tags for easy correlation with releases.',
     event: 'inspectr.operation.started',
     priority: 95,
-    group_type: 'release-infra',
+    group_type: 'release-feature',
     expression: { op: '==', left: { path: '$.meta.always' }, right: true },
     actions: [
       { type: 'inspectr.tag.git', params: { repo_path: '', key: 'git.branch', lowercase: true } },
@@ -908,7 +908,7 @@ const templates = [
     description: 'Tags the OAuth grant type when calling token endpoints.',
     event: 'inspectr.operation.started',
     priority: 92,
-    group_type: 'security-oauth',
+    group_type: 'security-auth',
     expression: {
       op: 'and',
       args: [
@@ -943,7 +943,7 @@ const templates = [
     description: 'Tags OAuth/OIDC error codes returned by token/authorize endpoints.',
     event: 'inspectr.operation.completed',
     priority: 91,
-    group_type: 'security-oauth',
+    group_type: 'security-auth',
     expression: {
       op: 'and',
       args: [
@@ -979,7 +979,7 @@ const templates = [
       'Tags the requesting OAuth client_id (from body or headers) for accountability and analysis.',
     event: 'inspectr.operation.started',
     priority: 90,
-    group_type: 'security-oauth',
+    group_type: 'security-auth',
     expression: {
       op: 'and',
       args: [
@@ -1030,7 +1030,7 @@ const templates = [
       'Tags token_type from token responses and audience from request/response if present.',
     event: 'inspectr.operation.completed',
     priority: 89,
-    group_type: 'security-oauth',
+    group_type: 'security-auth',
     expression: {
       op: 'matches',
       left: { path: '$.request.path' },
@@ -1069,7 +1069,7 @@ const templates = [
       'Ensures trace assignment is captured for /authorize and /token steps to link the full OAuth flow.',
     event: 'inspectr.operation.started',
     priority: 88,
-    group_type: 'security-oauth',
+    group_type: 'security-auth',
     expression: {
       op: 'matches',
       left: { path: '$.request.path' },
